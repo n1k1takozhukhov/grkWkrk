@@ -1,0 +1,51 @@
+//MainPageView
+"1d" = "1д";
+"3mo" = "3м";
+"6mo" = "6м";
+"1y" = "1г";
+"Search..." = "Поиск...";
+
+//SnapsListView
+"Profit" = "Прибыль";
+"Money to invest" = "Деньги для инвестиций";
+"Add money" = "Пополнить счет";
+"Add Money Amount" = "Введите количество средств";
+"Enter amount of money" = "Введите сумму денег:";
+"Add" = "Добавить";
+"Cancel" = "Отменить";
+"Reset account" = "Сбросить аккаунт";
+"Delete" = "Удалить";
+"Snaps" = "Кошелек";
+"Sell" = "Продать";
+"Are you sure you want to reset your account?" = "Вы уверены, что хотите сбросить настройки своей учетной записи?";
+
+
+
+//StockPreview
+"Volume" = "Объем";
+"average 30d" = "в среднем 30дн";
+"average 60d" = "в среднем 60дн";
+"Enter price" = "Введите цену";
+"Buy" = "Купить";
+"Watch" = "Отслеживать";
+"Unwatch" = "Не отслеживать";
+
+//TabController
+"Home" = "Домой";
+"Watchlist" = "Список";
+"Snaps" = "Портфель";
+"News" = "Новости";
+"Smart Wallet" = "Умный кошелек";
+
+
+//StockChartView
+"Date" = "Дата";
+"Price" = "Цена";
+"Min" = "Мин";
+
+
+//NewsListView
+"News" = "Новости";
+
+//NewsDetailView
+"Description" = "Подробнее";
