@@ -1,0 +1,51 @@
+//MainPageView
+"1d" = "1d";
+"3mo" = "3mo";
+"6mo" = "6mo";
+"1y" = "1y";
+"Search..." = "Search...";
+
+//SnapsListView
+"Profit" = "Profit";
+"Money to invest" = "Money to invest";
+"Add money" = "Add money";
+"Add Money Amount" = "Add Money Amount";
+"Enter amount of money" = "Enter amount of money:";
+"Add" = "Add";
+"Cancel" = "Cancel";
+"Reset account" = "Reset account";
+"Delete" = "Delete";
+"Snaps" = "Snaps";
+"Sell" = "Sell";
+"Are you sure you want to reset your account?" = "Are you sure you want to reset your account?";
+
+
+
+//StockPreview
+"Volume" = "Volume";
+"average 30d" = "average 30d";
+"average 60d" = "average 60d";
+"Enter price" = "Enter price";
+"Buy" = "Buy";
+"Watch" = "Watch";
+"Unwatch" = "Unwatch";
+
+
+//TabController
+"Home" = "Home";
+"Watchlist" = "Watchlist";
+"Snaps" = "Snaps";
+"News" = "News";
+"Smart Wallet" = "Smart Wallet";
+
+
+//StockChartView
+"Date" = "Date";
+"Price" = "Price";
+"Min" = "Min";
+
+//NewsListView
+"News" = "News";
+
+//NewsDetailView
+"Description" = "Description";
