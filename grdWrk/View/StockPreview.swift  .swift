@@ -20,8 +20,16 @@ struct StockPreview: View {
         var stock = viewModel.stockItem ?? StockItem(symbol: "", title: "", price: 1, ammount: 1)
         let latestPrice = viewModel.stockItem?.price ?? 0
         let average = viewModel.average
-
+        
         NavigationView{
+//            ZStack {
+//                LinearGradient(
+//                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
+//                    startPoint: .topLeading,
+//                    endPoint: .bottomTrailing
+//                )
+//                .ignoresSafeArea()
+//                
             VStack{
                 StockChartView(data: viewModel.chartData)
                     .frame(width: 370,height: 230)
@@ -134,8 +142,7 @@ struct StockPreview: View {
                     }.onAppear(){
                         viewModel.send(.appear(stock.symbol))
                     }
+            }
         }
-
     }
-}
-
+//}

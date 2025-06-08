@@ -21,6 +21,13 @@ struct MainPageView: View {
         @State var emptyChartData = viewModel.chartData
         NavigationView {
             ZStack{
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+                
                 VStack {
                     VStack{
                         TextField("Search...".localized, text: $searchText)
@@ -139,6 +146,13 @@ struct MainPageView: View {
             }
         }
     }
+}
+
+#Preview {
+    MainPageView(viewModel: MainScreenViewModel(
+        apiManager: APIManager(),
+        coordinator: nil
+    ))
 }
            
 
