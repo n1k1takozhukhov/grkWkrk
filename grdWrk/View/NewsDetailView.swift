@@ -9,13 +9,8 @@ struct NewsDetailView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-            
+            BackgroundLinearGradient()
+
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     

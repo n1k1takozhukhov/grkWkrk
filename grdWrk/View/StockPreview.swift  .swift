@@ -22,35 +22,35 @@ struct StockPreview: View {
         let average = viewModel.average
         
         NavigationView{
-//            ZStack {
-//                LinearGradient(
-//                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
-//                    startPoint: .topLeading,
-//                    endPoint: .bottomTrailing
-//                )
-//                .ignoresSafeArea()
-//                
+            //            ZStack {
+            //                LinearGradient(
+            //                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
+            //                    startPoint: .topLeading,
+            //                    endPoint: .bottomTrailing
+            //                )
+            //                .ignoresSafeArea()
+            //
             VStack{
                 StockChartView(data: viewModel.chartData)
                     .frame(width: 370,height: 230)
                     .foregroundStyle(.gray)
                     .cornerRadius(15)
                     .padding(.top, 25)
-  
+                
                 Section{
                     HStack {
                         let timeframes = ["1d", "3mo", "6mo", "1y"]
-                                        ForEach(timeframes, id: \.self) { timeframe in
-                                            Button(action: {
-                                                selectedTimeframe = timeframe
-                                                viewModel.send(.timeframeSelected(stock.symbol, selectedTimeframe))
-                                            }) {
-                                                Text(timeframe)
-                                            }.buttonStyle(.timeframe(isSelected: selectedTimeframe == timeframe))
-
-                                        }
-                                    }
-                                    .padding(.horizontal, 25)
+                        ForEach(timeframes, id: \.self) { timeframe in
+                            Button(action: {
+                                selectedTimeframe = timeframe
+                                viewModel.send(.timeframeSelected(stock.symbol, selectedTimeframe))
+                            }) {
+                                Text(timeframe)
+                            }.buttonStyle(.timeframe(isSelected: selectedTimeframe == timeframe))
+                            
+                        }
+                    }
+                    .padding(.horizontal, 25)
                 }
                 
                 Section{
@@ -96,17 +96,17 @@ struct StockPreview: View {
                 
                 Section{
                     TextField("Enter price".localized, text: $price)
-                                .keyboardType(.decimalPad)
-                                .padding(12)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color(.systemGray6))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.green, lineWidth: 2)
-                                )
-                                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 2, y: 2)
+                        .keyboardType(.decimalPad)
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color(.systemGray6))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.green, lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 2, y: 2)
                     
                     Button(action: {
                         viewModel.send(.addToSnapslistClick(stock,price))
@@ -120,29 +120,28 @@ struct StockPreview: View {
                 
             }.padding()
                 .navigationTitle(stock.title)
-                    .toolbar(){
-                        ToolbarItem(placement: .topBarLeading){
-                            Button(action: {
-                                dismiss()
-                            }){
-                                Text("Cancel".localized).foregroundStyle(.green)
-                            }
+                .toolbar(){
+                    ToolbarItem(placement: .topBarLeading){
+                        Button(action: {
+                            dismiss()
+                        }){
+                            Text("Cancel".localized).foregroundStyle(.green)
                         }
-                        ToolbarItem(placement: .topBarTrailing){
-                            Button(action: {
-                                if(watchlistViewModel.isInWatchlist(stock: stock)){
-                                    stock.is_watchlist = true
-                                }
-                                viewModel.send(.addToWatchlistClick(stock))
-                                
-                            }){
-                                Text(watchlistViewModel.isInWatchlist(stock: stock) ? "Unwatch".localized : "Watch".localized).foregroundStyle(.green)
-                            }
-                        }
-                    }.onAppear(){
-                        viewModel.send(.appear(stock.symbol))
                     }
-            }
+                    ToolbarItem(placement: .topBarTrailing){
+                        Button(action: {
+                            if(watchlistViewModel.isInWatchlist(stock: stock)){
+                                stock.is_watchlist = true
+                            }
+                            viewModel.send(.addToWatchlistClick(stock))
+                            
+                        }){
+                            Text(watchlistViewModel.isInWatchlist(stock: stock) ? "Unwatch".localized : "Watch".localized).foregroundStyle(.green)
+                        }
+                    }
+                }.onAppear(){
+                    viewModel.send(.appear(stock.symbol))
+                }
         }
     }
-//}
+}

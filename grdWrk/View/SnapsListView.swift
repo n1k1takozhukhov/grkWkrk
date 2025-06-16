@@ -14,31 +14,20 @@ struct SnapsListView: View {
         NavigationView{
             
             ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
-                
+                BackgroundLinearGradient()
                 
                 ZStack{
                     VStack{
                         VStack{
-                            TextField("Search...".localized, text: $searchText)
-                                .padding(10)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                                .onChange(of: searchText) { oldValue, newValue in
-                                    print(newValue)
-                                    mainViewModel.send(.searchTextChanged(newValue))
-                                }
-                                .onSubmit {
-                                    mainViewModel.send(.searchConfirmed(searchText))
-                                    searchText = ""
-                                    mainViewModel.send(.searchTextChanged(searchText))
-                                }
-                        }
+                            SearchField(
+                                searchText: $searchText,
+                                onSearch: { text in
+                                    mainViewModel.send(.searchConfirmed(text))
+                                },
+                                onTextChange: { text in
+                                    mainViewModel.send(.searchTextChanged(text))
+                                })
+                        }.padding(.horizontal)
                         
                         
                         VStack{
@@ -59,10 +48,10 @@ struct SnapsListView: View {
                                     Text("\(String(format: "%0.2f",balance.moneyToInvest))$").font(.title2).foregroundStyle(.gray)
                                 }
                             }.padding(8)
-                            
-                        }.padding(4)
-                            .background(.ultraThickMaterial)
-                            .cornerRadius(16)
+                        }
+                        .background(.ultraThickMaterial)
+                        .cornerRadius(16)
+                        .padding(.horizontal)
                         
                         HStack{
                             Button(action: { showAddMoneyAlert = true }){
@@ -124,7 +113,9 @@ struct SnapsListView: View {
                                                 .font(.subheadline)
                                                 .foregroundColor(.gray)
                                         }
+                                        
                                         Spacer()
+                                        
                                         HStack{
                                             VStack(alignment: .trailing){
                                                 Text("$\(String(format: "%.3f", calc1))")
@@ -150,6 +141,8 @@ struct SnapsListView: View {
                                 }
                             }
                         }
+                        .padding(.horizontal)
+                        
                     }.onAppear(){
                         searchText = ""
                         mainViewModel.send(.searchTextChanged(""))
@@ -159,29 +152,25 @@ struct SnapsListView: View {
                         mainViewModel.send(.searchTextChanged(""))
                     })
                     
-                    VStack{
-                        if(mainViewModel.search != nil){
-                            ForEach(mainViewModel.search!.quotes, id: \.self.symbol){ quote in
-                                Text("\(quote.shortname)").onTapGesture {
-                                    Task{
-                                        let stock = await mainViewModel.getStockItemFromSymbol(symbol: quote.symbol)
+                    if let search = mainViewModel.search {
+                        SearchResultsView(
+                            quotes: search.quotes,
+                            onQuoteSelected: { symbol in
+                                Task {
+                                    let stock = await mainViewModel.getStockItemFromSymbol(symbol: symbol)
+                                    await MainActor.run {
                                         mainViewModel.send(.didTapStockPreview(stock))
                                         searchText = ""
                                         mainViewModel.send(.searchTextChanged(""))
                                     }
-                                }.padding()
+                                }
+                            },
+                            onDismiss: {
+                                searchText = ""
+                                mainViewModel.send(.searchTextChanged(""))
                             }
-                        }
-                    }.background(.ultraThickMaterial)
-                        .cornerRadius(8)
-                        .shadow(radius: 4)
-                        .padding(.bottom, 120)
-                        .onTapGesture {
-                            searchText = ""
-                            mainViewModel.send(.searchTextChanged(""))
-                        }
-                    
-                    
+                        )
+                    }
                 }
             }
         }

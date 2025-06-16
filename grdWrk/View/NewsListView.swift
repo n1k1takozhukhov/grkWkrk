@@ -19,12 +19,7 @@ struct NewsListView: View {
         
         NavigationView {
             ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                BackgroundLinearGradient()
                 
                 VStack(alignment: .leading) {
                     Text("News".localized)
@@ -74,13 +69,19 @@ struct NewsListView: View {
                                         .lineLimit(1)
                                 }
                             }
+                            .padding()
+                            .background(Color(.systemGray6).opacity(0.5))
+                            .cornerRadius(10)
                         }
+                        .listRowBackground(Color.clear)
                     }
+                    .toolbarBackground(.hidden, for: .navigationBar)
+                    .scrollContentBackground(.hidden)
+                    .scrollIndicators(.hidden)
                 }
-            }.onAppear(){
-                viewModel.isLoading = true
+            }
+            .onAppear(){
                 viewModel.send(.refetchNews)
-                viewModel.isLoading = true
             }
             .overlay {
                 if (viewModel.isLoading) {

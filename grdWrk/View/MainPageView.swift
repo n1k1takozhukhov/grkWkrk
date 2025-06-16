@@ -19,31 +19,23 @@ struct MainPageView: View {
     var body: some View {
         @State var marketList = viewModel.marketList
         @State var emptyChartData = viewModel.chartData
+        
         NavigationView {
             ZStack{
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                BackgroundLinearGradient()
                 
                 VStack {
                     VStack{
-                        TextField("Search...".localized, text: $searchText)
-                            .padding(10)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                            .onChange(of: searchText) { oldValue, newValue in
-                                print(newValue)
-                                viewModel.send(.searchTextChanged(newValue))
-                            }
-                            .onSubmit {
-                                viewModel.send(.searchConfirmed(searchText))
-                                searchText = ""
-                                viewModel.send(.searchTextChanged(""))
-                            }
-                    }.padding(.horizontal)
+                        SearchField(
+                            searchText: $searchText,
+                            onSearch: { text in
+                                viewModel.send(.searchConfirmed(text))
+                            },
+                            onTextChange: { text in
+                                viewModel.send(.searchTextChanged(text))
+                            })
+                    }
+                    .padding(.horizontal)
                     
                     StockChartView(data: emptyChartData)
                         .frame(width: 370,height: 230)
@@ -113,8 +105,6 @@ struct MainPageView: View {
                         }.padding()
                     }
                     .frame(maxHeight: 300)
-                    
-                    
                 }
                 .padding()
                 .onTapGesture(perform: {
@@ -122,27 +112,25 @@ struct MainPageView: View {
                     viewModel.send(.searchTextChanged(""))
                 })
                 
-                VStack{
-                    if(viewModel.search != nil){
-                        ForEach(viewModel.search!.quotes, id: \.self.symbol){ quote in
-                            Text("\(quote.shortname)").onTapGesture {
-                                Task{
-                                    let stock = await viewModel.getStockItemFromSymbol(symbol: quote.symbol)
+                if let search = viewModel.search {
+                    SearchResultsView(
+                        quotes: search.quotes,
+                        onQuoteSelected: { symbol in
+                            Task {
+                                let stock = await viewModel.getStockItemFromSymbol(symbol: symbol)
+                                await MainActor.run {
                                     viewModel.send(.didTapStockPreview(stock))
                                     searchText = ""
                                     viewModel.send(.searchTextChanged(""))
                                 }
-                            }.padding()
+                            }
+                        },
+                        onDismiss: {
+                            searchText = ""
+                            viewModel.send(.searchTextChanged(""))
                         }
-                    }
-                }.background(.ultraThickMaterial)
-                    .cornerRadius(8)
-                    .shadow(radius: 4)
-                    .padding(.bottom, 120)
-                    .onTapGesture(perform: {
-                        searchText = ""
-                        viewModel.send(.searchTextChanged(""))
-                    })
+                    )
+                }
             }
         }
     }
@@ -154,6 +142,3 @@ struct MainPageView: View {
         coordinator: nil
     ))
 }
-           
-
-

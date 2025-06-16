@@ -37,6 +37,7 @@ struct TimeframeButtonStyle: ButtonStyle {
 
 struct BottomButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) var isEnabled
+    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(maxWidth: .infinity)

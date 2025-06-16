@@ -56,6 +56,9 @@
 		887828F52D457FB7008A99EB /* buttonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 887828F42D457FB7008A99EB /* buttonStyles.swift */; };
 		8D1BBD542DED5EF30041214A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D1BBD522DED5EF30041214A /* Localizable.strings */; };
 		8D1BBD572DED60F80041214A /* Stringh+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1BBD562DED60F80041214A /* Stringh+extension.swift */; };
+		8DDF74632E0022DD00CD5982 /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DDF74622E0022DD00CD5982 /* SearchField.swift */; };
+		8DDF74652E0025BD00CD5982 /* BackgroundLinearGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DDF74642E0025BD00CD5982 /* BackgroundLinearGradient.swift */; };
+		8DDF74672E0030F700CD5982 /* SearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DDF74662E0030F700CD5982 /* SearchResultView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +146,9 @@
 		8D1BBD532DED5EF30041214A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8D1BBD552DED5F0B0041214A /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8D1BBD562DED60F80041214A /* Stringh+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stringh+extension.swift"; sourceTree = "<group>"; };
+		8DDF74622E0022DD00CD5982 /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
+		8DDF74642E0025BD00CD5982 /* BackgroundLinearGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundLinearGradient.swift; sourceTree = "<group>"; };
+		8DDF74662E0030F700CD5982 /* SearchResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,16 +223,16 @@
 		71A6BD632CCBFDA7008BB9C2 /* grdWrk */ = {
 			isa = PBXGroup;
 			children = (
+				71A6BDC02CCBFE22008BB9C2 /* Coordinator */,
+				71A6BDCD2CCC0395008BB9C2 /* Model */,
 				71F33B1D2D2BDED600680699 /* View */,
 				7127522F2CCC1A56003784DD /* ViewModels */,
+				71A6BDD62CCC0949008BB9C2 /* Services */,
 				712752262CCC1913003784DD /* Networking */,
 				71A6BDDB2CCC1112008BB9C2 /* Info.plist */,
 				71A6BD6A2CCBFDA8008BB9C2 /* Preview Content */,
-				71A6BDD62CCC0949008BB9C2 /* Services */,
 				71A6BDD52CCC0916008BB9C2 /* Application */,
-				71A6BDC02CCBFE22008BB9C2 /* Coordinator */,
 				71A6BDC72CCC02D9008BB9C2 /* DependencyInjection */,
-				71A6BDCD2CCC0395008BB9C2 /* Model */,
 				71A6BDD02CCC04CA008BB9C2 /* Protocols */,
 			);
 			path = grdWrk;
@@ -321,22 +327,21 @@
 			isa = PBXGroup;
 			children = (
 				887828F32D457FA4008A99EB /* styles */,
-				71DB70272D429C8D00E7B021 /* LoadingView.swift */,
 				71F33B1E2D2BDF1900680699 /* MainPageView.swift */,
 				71F33B202D2BDF4400680699 /* MainViewEventHandling.swift */,
-				71F33B222D2BDF5A00680699 /* NewsDetailView.swift */,
-				71F33B242D2BDF7600680699 /* NewsDetailViewEventHandling.swift */,
+				71F33B2C2D2BDFD500680699 /* StockPreview.swift  .swift */,
+				71F33B4F2D2C005500680699 /* StockChartView.swift */,
+				71F33B2E2D2BDFE600680699 /* StockPreviewEventHandling.swift */,
+				71F33B342D2BE02400680699 /* WatchListView.swift */,
+				713ACB7A2D43D1910085D8C9 /* WatchListEventHandling.swift */,
+				71F33B2A2D2BDFC200680699 /* SnapsListView.swift */,
+				71D6E24B2D354C180014F18F /* SnapsListViewEventHandling.swift */,
 				71F33B262D2BDF8D00680699 /* NewsListView.swift */,
 				71F33B282D2BDFAC00680699 /* NewsListViewEventHandling.swift */,
-				71F33B2A2D2BDFC200680699 /* SnapsListView.swift */,
-				71F33B2C2D2BDFD500680699 /* StockPreview.swift  .swift */,
-				71F33B2E2D2BDFE600680699 /* StockPreviewEventHandling.swift */,
+				71F33B222D2BDF5A00680699 /* NewsDetailView.swift */,
+				71F33B242D2BDF7600680699 /* NewsDetailViewEventHandling.swift */,
 				71F33B302D2BDFFA00680699 /* TabController.swift */,
 				71F33B322D2BE01100680699 /* TabControllerEventHandling.swift */,
-				71F33B342D2BE02400680699 /* WatchListView.swift */,
-				71F33B4F2D2C005500680699 /* StockChartView.swift */,
-				71D6E24B2D354C180014F18F /* SnapsListViewEventHandling.swift */,
-				713ACB7A2D43D1910085D8C9 /* WatchListEventHandling.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -345,6 +350,10 @@
 			isa = PBXGroup;
 			children = (
 				887828F42D457FB7008A99EB /* buttonStyles.swift */,
+				8DDF74642E0025BD00CD5982 /* BackgroundLinearGradient.swift */,
+				71DB70272D429C8D00E7B021 /* LoadingView.swift */,
+				8DDF74622E0022DD00CD5982 /* SearchField.swift */,
+				8DDF74662E0030F700CD5982 /* SearchResultView.swift */,
 			);
 			path = styles;
 			sourceTree = "<group>";
@@ -497,6 +506,7 @@
 				71D6E2452D353F160014F18F /* SnapsViewModel.swift in Sources */,
 				71F33B292D2BDFAC00680699 /* NewsListViewEventHandling.swift in Sources */,
 				71F33B502D2C005500680699 /* StockChartView.swift in Sources */,
+				8DDF74652E0025BD00CD5982 /* BackgroundLinearGradient.swift in Sources */,
 				71A6BDDA2CCC09B5008BB9C2 /* SceneDelegate.swift in Sources */,
 				71F33B4A2D2BE4A800680699 /* NewsDataRouter.swift in Sources */,
 				71A6BDCF2CCC03B4008BB9C2 /* CoreDataController.swift in Sources */,
@@ -508,9 +518,11 @@
 				71A6BDC92CCC02F8008BB9C2 /* DIContainer.swift in Sources */,
 				71F33B352D2BE02400680699 /* WatchListView.swift in Sources */,
 				71F33B402D2BE32700680699 /* ChartData.swift in Sources */,
+				8DDF74632E0022DD00CD5982 /* SearchField.swift in Sources */,
 				71F33B392D2BE0BD00680699 /* grdWrkCoordinator.swift  .swift in Sources */,
 				71DB70282D429C8D00E7B021 /* LoadingView.swift in Sources */,
 				8D1BBD572DED60F80041214A /* Stringh+extension.swift in Sources */,
+				8DDF74672E0030F700CD5982 /* SearchResultView.swift in Sources */,
 				7127522A2CCC1938003784DD /* APIManaging.swift in Sources */,
 				71F33B1F2D2BDF1900680699 /* MainPageView.swift in Sources */,
 				71F33B2F2D2BDFE600680699 /* StockPreviewEventHandling.swift in Sources */,
