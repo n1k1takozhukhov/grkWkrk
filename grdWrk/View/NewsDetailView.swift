@@ -9,12 +9,13 @@ struct NewsDetailView: View {
     
     var body: some View {
         ZStack {
+            //MARK: BackgroundLinearGradient
             BackgroundLinearGradient()
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     
-                    // Title
+                    //MARK: Title
                     Text(newsItem.title)
                         .font(.title)
                         .fontWeight(.bold)
@@ -59,6 +60,7 @@ struct NewsDetailView: View {
     }
 }
 
+//MARK: - #Preview
 #Preview {
     NewsDetailView(
         coordinator: nil,

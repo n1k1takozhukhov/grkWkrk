@@ -14,44 +14,33 @@ struct SnapsListView: View {
         NavigationView{
             
             ZStack {
+                //MARK: BackgroundLinearGradient
                 BackgroundLinearGradient()
                 
                 ZStack{
                     VStack{
                         VStack{
-                            SearchField(
-                                searchText: $searchText,
-                                onSearch: { text in
-                                    mainViewModel.send(.searchConfirmed(text))
-                                },
-                                onTextChange: { text in
-                                    mainViewModel.send(.searchTextChanged(text))
-                                })
+                            
+                            //MARK: seartFiled
+                            seartFiled()
                         }.padding(.horizontal)
                         
                         
                         VStack{
-                            HStack{
-                                VStack(alignment: .leading){
-                                    Text("Profit".localized).font(.title)
-                                }
-                                Spacer()
-                                VStack(alignment: .trailing){
-                                    Text("\(String(format: "%0.2f",balance.total))$").font(.title)
-                                    Text("\(String(format: "%0.2f",balance.profit))%").font(.title3).foregroundStyle(.green)
-                                }
-                            }.padding(8)
-                            HStack{
-                                Text("Money to invest".localized).font(.title2).foregroundStyle(.gray)
-                                Spacer()
-                                VStack(alignment: .trailing){
-                                    Text("\(String(format: "%0.2f",balance.moneyToInvest))$").font(.title2).foregroundStyle(.gray)
-                                }
-                            }.padding(8)
+                            
+                            //MARK: setPortfolio
+                            portfolioBlock()
+                                .padding(8)
+                            
+                            
+                            //MARK: moneyToIndestBlock
+                            moneyToIndestBlock()
+                                .padding(8)
                         }
                         .background(.ultraThickMaterial)
                         .cornerRadius(16)
                         .padding(.horizontal)
+                        
                         
                         HStack{
                             Button(action: { showAddMoneyAlert = true }){
@@ -73,7 +62,11 @@ struct SnapsListView: View {
                                     enteredAmount = ""
                                 }
                             })
+                            
+                            
                             Spacer()
+                            
+                            
                             Button(action: { showAlert = true}){
                                 Text("Reset account".localized)
                                     .foregroundStyle(.white)
@@ -95,53 +88,17 @@ struct SnapsListView: View {
                             }
                         }.padding()
                         
+                        
                         HStack{
                             Text("Snaps".localized).font(.title)
                             Spacer()
-                        }.padding()
-                        
-                        ScrollView{
-                            VStack(spacing: 8) {
-                                
-                                ForEach(viewModel.snapsList) { stock in
-                                    let calc1 = (stock.price) * stock.ammount
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(stock.title)
-                                                .font(.headline)
-                                            Text(stock.symbol)
-                                                .font(.subheadline)
-                                                .foregroundColor(.gray)
-                                        }
-                                        
-                                        Spacer()
-                                        
-                                        HStack{
-                                            VStack(alignment: .trailing){
-                                                Text("$\(String(format: "%.3f", calc1))")
-                                                    .font(.headline)
-                                                Text("\(String(format: "%.3f", (stock.profit ?? 1) * 100))%")
-                                                    .font(.body)
-                                                    .foregroundColor(stock.colorProfit)
-                                            }
-                                            Button(action: {
-                                                viewModel.send(.didTapSell(stock))
-                                            }){
-                                                Text("Sell".localized)
-                                            }.buttonStyle(.dismissButtonStyle)
-                                        }
-                                        
-                                    }
-                                    .padding()
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(10)
-                                    .onTapGesture {
-                                        mainViewModel.send(.didTapStockPreview(stock))
-                                    }
-                                }
-                            }
                         }
-                        .padding(.horizontal)
+                        .padding()
+                        
+                        
+                        //MARK: contentScrollView
+                        contentScrollView()
+                            .padding(.horizontal)
                         
                     }.onAppear(){
                         searchText = ""
@@ -152,29 +109,123 @@ struct SnapsListView: View {
                         mainViewModel.send(.searchTextChanged(""))
                     })
                     
-                    if let search = mainViewModel.search {
-                        SearchResultsView(
-                            quotes: search.quotes,
-                            onQuoteSelected: { symbol in
-                                Task {
-                                    let stock = await mainViewModel.getStockItemFromSymbol(symbol: symbol)
-                                    await MainActor.run {
-                                        mainViewModel.send(.didTapStockPreview(stock))
-                                        searchText = ""
-                                        mainViewModel.send(.searchTextChanged(""))
-                                    }
-                                }
-                            },
-                            onDismiss: {
+                    
+                    //MARK: Search to ViewModel
+                    seartchViewModel()
+                }
+            }
+        }
+    }
+    
+    //MARK: - Content Block
+    private func seartFiled() -> some View {
+        SearchField(
+            searchText: $searchText,
+            onSearch: { text in
+                mainViewModel.send(.searchConfirmed(text))
+            },
+            onTextChange: { text in
+                mainViewModel.send(.searchTextChanged(text))
+            }
+        )
+    }
+    
+    private func seartchViewModel() -> some View {
+        Group {
+            if let search = mainViewModel.search {
+                SearchResultsView(
+                    quotes: search.quotes,
+                    onQuoteSelected: { symbol in
+                        Task {
+                            let stock = await mainViewModel.getStockItemFromSymbol(symbol: symbol)
+                            await MainActor.run {
+                                mainViewModel.send(.didTapStockPreview(stock))
                                 searchText = ""
                                 mainViewModel.send(.searchTextChanged(""))
                             }
-                        )
+                        }
+                    },
+                    onDismiss: {
+                        searchText = ""
+                        mainViewModel.send(.searchTextChanged(""))
+                    }
+                )
+            }
+        }
+    }
+    
+    private func portfolioBlock() -> some View {
+        @State var balance = viewModel.balance
+        
+        return HStack{
+            VStack(alignment: .leading){
+                Text("Profit".localized).font(.title)
+            }
+            Spacer()
+            VStack(alignment: .trailing){
+                Text("\(String(format: "%0.2f",balance.total))$").font(.title)
+                Text("\(String(format: "%0.2f",balance.profit))%").font(.title3).foregroundStyle(.green)
+            }
+        }
+    }
+    
+    private func moneyToIndestBlock() -> some View {
+        @State var balance = viewModel.balance
+        
+        return HStack{
+            Text("Money to invest".localized).font(.title2).foregroundStyle(.gray)
+            Spacer()
+            VStack(alignment: .trailing){
+                Text("\(String(format: "%0.2f",balance.moneyToInvest))$").font(.title2).foregroundStyle(.gray)
+            }
+        }
+    }
+    
+    private func contentScrollView() -> some View {
+        ScrollView{
+            VStack(spacing: 8) {
+                
+                ForEach(viewModel.snapsList) { stock in
+                    let calc1 = (stock.price) * stock.ammount
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(stock.title)
+                                .font(.headline)
+                            Text(stock.symbol)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Spacer()
+                        
+                        HStack{
+                            VStack(alignment: .trailing){
+                                Text("$\(String(format: "%.3f", calc1))")
+                                    .font(.headline)
+                                Text("\(String(format: "%.3f", (stock.profit ?? 1) * 100))%")
+                                    .font(.body)
+                                    .foregroundColor(stock.colorProfit)
+                            }
+                            Button(action: {
+                                viewModel.send(.didTapSell(stock))
+                            }){
+                                Text("Sell".localized)
+                            }.buttonStyle(.dismissButtonStyle)
+                        }
+                        
+                    }
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .onTapGesture {
+                        mainViewModel.send(.didTapStockPreview(stock))
                     }
                 }
             }
         }
     }
+    
+    
 }
 
 // MARK: - Preview Helpers

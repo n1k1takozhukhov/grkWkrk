@@ -9,6 +9,7 @@ struct StockPreview: View {
     @State private var selectedTimeframe: String = "1d".localized
     weak var coordinator: StockPreviewEventHandling?
     
+    //validation
     private var isValidPrice: Bool {
         if let priceValue = Double(price), priceValue > 0 {
             return snapsViewModel.balance.moneyToInvest >= priceValue
@@ -22,35 +23,20 @@ struct StockPreview: View {
         let average = viewModel.average
         
         NavigationView{
-            //            ZStack {
-            //                LinearGradient(
-            //                    gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]),
-            //                    startPoint: .topLeading,
-            //                    endPoint: .bottomTrailing
-            //                )
-            //                .ignoresSafeArea()
-            //
             VStack{
+                
+                //MARK: StockChartView
                 StockChartView(data: viewModel.chartData)
                     .frame(width: 370,height: 230)
                     .foregroundStyle(.gray)
                     .cornerRadius(15)
                     .padding(.top, 25)
                 
+                
+                //MARK: timeFrameView
                 Section{
-                    HStack {
-                        let timeframes = ["1d", "3mo", "6mo", "1y"]
-                        ForEach(timeframes, id: \.self) { timeframe in
-                            Button(action: {
-                                selectedTimeframe = timeframe
-                                viewModel.send(.timeframeSelected(stock.symbol, selectedTimeframe))
-                            }) {
-                                Text(timeframe)
-                            }.buttonStyle(.timeframe(isSelected: selectedTimeframe == timeframe))
-                            
-                        }
-                    }
-                    .padding(.horizontal, 25)
+                    timeFrameView()
+                        .padding(.horizontal, 25)
                 }
                 
                 Section{
@@ -65,35 +51,12 @@ struct StockPreview: View {
                         .cornerRadius(16)
                 }
                 
-                Section{
-                    VStack{
-                        HStack{
-                            Text("Volume".localized).font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                Text(String(viewModel.chartData.latestVolume ?? 0))
-                            }
-                        }.padding(8)
-                        HStack{
-                            Text("average 30d".localized).font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                Text(String(format: "%.2f", average.thirty ?? "unknown"))
-                            }
-                        }.padding(8)
-                        HStack{
-                            Text("average 60d".localized).font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                Text(String(format: "%.2f", average.sixty ?? "unknown"))
-                            }
-                        }.padding(8)
-                        
-                    }.padding()
-                        .background(.ultraThickMaterial)
-                        .cornerRadius(16)
-                }
                 
+                //MARK: setAnalitycsStock
+                Section {
+                    setAnalitycsStock()
+                }
+                    
                 Section{
                     TextField("Enter price".localized, text: $price)
                         .keyboardType(.decimalPad)
@@ -143,5 +106,54 @@ struct StockPreview: View {
                     viewModel.send(.appear(stock.symbol))
                 }
         }
+    }
+    
+    //MARK: - Content Block
+    private func timeFrameView() -> some View {
+        @State var stock = viewModel.stockItem ?? StockItem(symbol: "", title: "", price: 1, ammount: 1)
+
+        return HStack {
+            let timeframes = ["1d", "3mo", "6mo", "1y"]
+            ForEach(timeframes, id: \.self) { timeframe in
+                Button(action: {
+                    selectedTimeframe = timeframe
+                    viewModel.send(.timeframeSelected(stock.symbol, selectedTimeframe))
+                }) {
+                    Text(timeframe)
+                }.buttonStyle(.timeframe(isSelected: selectedTimeframe == timeframe))
+                
+            }
+        }
+    }
+    
+    private func setAnalitycsStock() -> some View {
+        let average = viewModel.average
+
+        return VStack{
+            HStack{
+                Text("Volume".localized).font(.headline)
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text(String(viewModel.chartData.latestVolume ?? 0))
+                }
+            }.padding(8)
+            HStack{
+                Text("average 30d".localized).font(.headline)
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text(String(format: "%.2f", average.thirty ?? "unknown"))
+                }
+            }.padding(8)
+            HStack{
+                Text("average 60d".localized).font(.headline)
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text(String(format: "%.2f", average.sixty ?? "unknown"))
+                }
+            }.padding(8)
+            
+        }.padding()
+            .background(.ultraThickMaterial)
+            .cornerRadius(16)
     }
 }

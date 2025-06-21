@@ -19,7 +19,9 @@ struct NewsListView: View {
         
         NavigationView {
             ZStack {
+                //MARK: BackgroundLinearGradient
                 BackgroundLinearGradient()
+                
                 
                 VStack(alignment: .leading) {
                     Text("News".localized)
@@ -92,7 +94,7 @@ struct NewsListView: View {
     }
 }
 
-
+//MARK: - #Preview
 #Preview {
     NewsListView(viewModel: NewsScreenViewModel(
         apiManager: APIManager(),
