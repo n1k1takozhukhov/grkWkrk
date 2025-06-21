@@ -9,6 +9,7 @@ struct StockPreview: View {
     @State private var selectedTimeframe: String = "1d".localized
     weak var coordinator: StockPreviewEventHandling?
     
+    //validation
     private var isValidPrice: Bool {
         if let priceValue = Double(price), priceValue > 0 {
             return snapsViewModel.balance.moneyToInvest >= priceValue
@@ -20,29 +21,22 @@ struct StockPreview: View {
         var stock = viewModel.stockItem ?? StockItem(symbol: "", title: "", price: 1, ammount: 1)
         let latestPrice = viewModel.stockItem?.price ?? 0
         let average = viewModel.average
-
+        
         NavigationView{
             VStack{
+                
+                //MARK: StockChartView
                 StockChartView(data: viewModel.chartData)
                     .frame(width: 370,height: 230)
                     .foregroundStyle(.gray)
                     .cornerRadius(15)
                     .padding(.top, 25)
-  
+                
+                
+                //MARK: timeFrameView
                 Section{
-                    HStack {
-                        let timeframes = ["1d", "3mo", "6mo", "1y"]
-                                        ForEach(timeframes, id: \.self) { timeframe in
-                                            Button(action: {
-                                                selectedTimeframe = timeframe
-                                                viewModel.send(.timeframeSelected(stock.symbol, selectedTimeframe))
-                                            }) {
-                                                Text(timeframe)
-                                            }.buttonStyle(.timeframe(isSelected: selectedTimeframe == timeframe))
-
-                                        }
-                                    }
-                                    .padding(.horizontal, 25)
+                    timeFrameView()
+                        .padding(.horizontal, 25)
                 }
                 
                 Section{
@@ -57,48 +51,25 @@ struct StockPreview: View {
                         .cornerRadius(16)
                 }
                 
-                Section{
-                    VStack{
-                        HStack{
-                            Text("Volume".localized).font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                Text(String(viewModel.chartData.latestVolume ?? 0))
-                            }
-                        }.padding(8)
-                        HStack{
-                            Text("average 30d".localized).font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                Text(String(format: "%.2f", average.thirty ?? "unknown"))
-                            }
-                        }.padding(8)
-                        HStack{
-                            Text("average 60d".localized).font(.headline)
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                Text(String(format: "%.2f", average.sixty ?? "unknown"))
-                            }
-                        }.padding(8)
-                        
-                    }.padding()
-                        .background(.ultraThickMaterial)
-                        .cornerRadius(16)
-                }
                 
+                //MARK: setAnalitycsStock
+                Section {
+                    setAnalitycsStock()
+                }
+                    
                 Section{
                     TextField("Enter price".localized, text: $price)
-                                .keyboardType(.decimalPad)
-                                .padding(12)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color(.systemGray6))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.green, lineWidth: 2)
-                                )
-                                .shadow(color: Color.black.opacity(0.1), radius: 4, x: 2, y: 2)
+                        .keyboardType(.decimalPad)
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color(.systemGray6))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.green, lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 2, y: 2)
                     
                     Button(action: {
                         viewModel.send(.addToSnapslistClick(stock,price))
@@ -112,30 +83,77 @@ struct StockPreview: View {
                 
             }.padding()
                 .navigationTitle(stock.title)
-                    .toolbar(){
-                        ToolbarItem(placement: .topBarLeading){
-                            Button(action: {
-                                dismiss()
-                            }){
-                                Text("Cancel".localized).foregroundStyle(.green)
-                            }
+                .toolbar(){
+                    ToolbarItem(placement: .topBarLeading){
+                        Button(action: {
+                            dismiss()
+                        }){
+                            Text("Cancel".localized).foregroundStyle(.green)
                         }
-                        ToolbarItem(placement: .topBarTrailing){
-                            Button(action: {
-                                if(watchlistViewModel.isInWatchlist(stock: stock)){
-                                    stock.is_watchlist = true
-                                }
-                                viewModel.send(.addToWatchlistClick(stock))
-                                
-                            }){
-                                Text(watchlistViewModel.isInWatchlist(stock: stock) ? "Unwatch".localized : "Watch".localized).foregroundStyle(.green)
-                            }
-                        }
-                    }.onAppear(){
-                        viewModel.send(.appear(stock.symbol))
                     }
+                    ToolbarItem(placement: .topBarTrailing){
+                        Button(action: {
+                            if(watchlistViewModel.isInWatchlist(stock: stock)){
+                                stock.is_watchlist = true
+                            }
+                            viewModel.send(.addToWatchlistClick(stock))
+                            
+                        }){
+                            Text(watchlistViewModel.isInWatchlist(stock: stock) ? "Unwatch".localized : "Watch".localized).foregroundStyle(.green)
+                        }
+                    }
+                }.onAppear(){
+                    viewModel.send(.appear(stock.symbol))
+                }
         }
+    }
+    
+    //MARK: - Content Block
+    private func timeFrameView() -> some View {
+        @State var stock = viewModel.stockItem ?? StockItem(symbol: "", title: "", price: 1, ammount: 1)
 
+        return HStack {
+            let timeframes = ["1d", "3mo", "6mo", "1y"]
+            ForEach(timeframes, id: \.self) { timeframe in
+                Button(action: {
+                    selectedTimeframe = timeframe
+                    viewModel.send(.timeframeSelected(stock.symbol, selectedTimeframe))
+                }) {
+                    Text(timeframe)
+                }.buttonStyle(.timeframe(isSelected: selectedTimeframe == timeframe))
+                
+            }
+        }
+    }
+    
+    private func setAnalitycsStock() -> some View {
+        let average = viewModel.average
+
+        return VStack{
+            HStack{
+                Text("Volume".localized).font(.headline)
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text(String(viewModel.chartData.latestVolume ?? 0))
+                }
+            }.padding(8)
+            HStack{
+                Text("average 30d".localized).font(.headline)
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text(String(format: "%.2f", average.thirty ?? "unknown"))
+                }
+            }.padding(8)
+            HStack{
+                Text("average 60d".localized).font(.headline)
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text(String(format: "%.2f", average.sixty ?? "unknown"))
+                }
+            }.padding(8)
+            
+        }.padding()
+            .background(.ultraThickMaterial)
+            .cornerRadius(16)
     }
 }
-

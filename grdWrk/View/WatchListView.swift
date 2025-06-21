@@ -6,98 +6,113 @@ struct WatchListView: View {
     @State private var searchText = ""
     
     var body: some View {
-        @State var watchList = viewModel.watchList
+        
         NavigationView{
             ZStack{
-                VStack{
-                    
+                //MARK: BackgroundLinearGradient
+                BackgroundLinearGradient()
+                
+                ZStack{
                     VStack{
-                        TextField("Search...".localized, text: $searchText)
-                            .padding(10)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                            .onChange(of: searchText) { oldValue, newValue in
-                                print(newValue)
-                                mainViewModel.send(.searchTextChanged(newValue))
-                            }
-                            .onSubmit {
-                                mainViewModel.send(.searchConfirmed(searchText))
-                                searchText = ""
-                                mainViewModel.send(.searchTextChanged(searchText))
-                            }
-                    }.padding(.horizontal)
-                    
-                    
-                    HStack{
-                        Text("Watchlist".localized).font(.title)
-                        Spacer()
-                    }.padding(.top, 20)
-                    
-                    ScrollView{
-                        VStack(spacing: 8) {
+                        
+                        //MARK: SeatchFiled
+                        VStack{
+                            seartFiled()
+                        }.padding(.horizontal)
+                        
+                        
+                        HStack{
+                            Text("Watchlist".localized).font(.title)
                             
-                            ForEach(watchList, id: \.title) { watchedStock in
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(watchedStock.title)
-                                            .font(.headline)
-                                        Text(watchedStock.symbol)
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                    }
-                                    Spacer()
-                                    VStack(alignment: .trailing){
-                                        Text("$\(String(format: "%.2f", watchedStock.price))")
-                                            .font(.headline)
-                                        Text("\(String(format: "%.2f", watchedStock.percentChange ?? 0))%")
-                                            .font(.body)
-                                            .foregroundColor(watchedStock.color)
-                                    }
-                                }
-                                .padding()
-                                .background(Color(.systemGray6))
-                                .cornerRadius(10)
-                                .onTapGesture {
-                                    self.viewModel.send(.didTapStockPreview(watchedStock))
-                                }
+                            Spacer()
+                        }.padding(.top, 20)
+                            .padding()
+                        
+                        
+                        //MARK: ContentView
+                        ScrollView{
+                            VStack(spacing: 8) {
+                                forEatchStockItem()
                             }
                         }
+                        .padding()
                     }
-                }.onAppear(){
-                    searchText = ""
-                    mainViewModel.send(.searchTextChanged(""))
-                    viewModel.send(.appear)
-                }
-                
-                
-                VStack{
-                    if(mainViewModel.search != nil){
-                        ForEach(mainViewModel.search!.quotes, id: \.self.symbol){ quote in
-                            Text("\(quote.shortname)").onTapGesture {
-                                Task{
-                                    let stock = await mainViewModel.getStockItemFromSymbol(symbol: quote.symbol)
-                                    mainViewModel.send(.didTapStockPreview(stock))
-                                    searchText = ""
-                                    mainViewModel.send(.searchTextChanged(""))
-                                }
-                            }.padding()
-                        }
-                    }
-                }.background(.ultraThickMaterial)
-                    .cornerRadius(8)
-                    .shadow(radius: 4)
-                    .padding(.bottom, 120)
-                    .onTapGesture(perform: {
+                    .onAppear(){
                         searchText = ""
                         mainViewModel.send(.searchTextChanged(""))
-                    })
-                
+                        viewModel.send(.appear)
+                    }
+                    
+                    
+                    //MARK: Search to ViewModel
+                    seartchViewModel()
+                }
             }
-            .onTapGesture(perform: {
-                searchText = ""
-                mainViewModel.send(.searchTextChanged(""))
-            })
+        }
+    }
+    
+    //MARK: - Content Block
+    private func seartFiled() -> some View {
+        SearchField(
+            searchText: $searchText,
+            onSearch: { text in
+                mainViewModel.send(.searchConfirmed(text))
+            },
+            onTextChange: { text in
+                mainViewModel.send(.searchTextChanged(text))
+            }
+        )
+    }
+    
+    private func forEatchStockItem() -> some View {
+        ForEach(viewModel.watchList, id: \.title) { watchedStock in
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(watchedStock.title)
+                        .font(.headline)
+                    Text(watchedStock.symbol)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+                VStack(alignment: .trailing){
+                    Text("$\(String(format: "%.2f", watchedStock.price))")
+                        .font(.headline)
+                    Text("\(String(format: "%.2f", watchedStock.percentChange ?? 0))%")
+                        .font(.body)
+                        .foregroundColor(watchedStock.color)
+                }
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+            .onTapGesture {
+                self.viewModel.send(.didTapStockPreview(watchedStock))
+            }
+        }
+    }
+    
+    private func seartchViewModel() -> some View {
+        Group {
+            if let search = mainViewModel.search {
+                SearchResultsView(
+                    quotes: search.quotes,
+                    onQuoteSelected: { symbol in
+                        Task {
+                            let stock = await mainViewModel.getStockItemFromSymbol(symbol: symbol)
+                            await MainActor.run {
+                                mainViewModel.send(.didTapStockPreview(stock))
+                                searchText = ""
+                                mainViewModel.send(.searchTextChanged(""))
+                            }
+                        }
+                    },
+                    onDismiss: {
+                        searchText = ""
+                        mainViewModel.send(.searchTextChanged(""))
+                    }
+                )
+            }
         }
     }
 }
-

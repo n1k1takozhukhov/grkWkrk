@@ -32,8 +32,8 @@
 
 //TabController
 "Home" = "Домой";
-"Watchlist" = "Список";
-"Snaps" = "Портфель";
+"Watchlist" = "Избранное";
+"Snaps" = "Кошелек";
 "News" = "Новости";
 "Smart Wallet" = "Умный кошелек";
 

@@ -15,7 +15,7 @@ struct TabController: View {
     var body: some View {
         
         TabView(selection: $selection) {
-            MainPageView(viewModel: viewModel)
+            MainPageView(mainViewModel: viewModel)
                 .tabItem {
                     Label("Home".localized, systemImage: "house")
                 }.tag(1)

@@ -47,7 +47,6 @@ struct MetaQuote: Codable {
 
 
 extension ChartData {
-    //computed for chart
     var chartPoints: [ChartPoint] {
         guard let timestamps = timestamp,
               let prices = close else { return [] }
@@ -72,7 +71,6 @@ extension ChartData {
 
 
 extension ChartData{
-    //computed for easier access
     var name: String {
         chart.result[0].meta.shortName
         }

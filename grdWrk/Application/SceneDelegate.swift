@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let appWindow = UIWindow(frame: windowScene.coordinateSpace.bounds)
         appWindow.windowScene = windowScene
         appCoordinator = AppCoordinator(window: appWindow, container: container)
-        self.window = appWindow // Add this line in SceneDelegate
+        self.window = appWindow
         appWindow.makeKeyAndVisible()
     }
 }
